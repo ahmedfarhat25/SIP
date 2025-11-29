@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive demonstration of Analog to Digital Conversion (Sampling & Quantization) and Audio Preprocessing techniques">
+  <title>ADC & Audio Preprocessing - Interactive Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>ADC & Audio Preprocessing</h1>
+    <p class="subtitle">Interactive Demonstration of Signal Processing Concepts</p>
+  </header>
+
+  <div class="container">
+    <!-- ADC Section -->
+    <section class="section">
+      <div class="glass-card">
+        <h2 class="section-title">Analog to Digital Conversion</h2>
+        
+        <div class="info-box">
+          <p><strong>Sampling:</strong> Converting continuous analog signals to discrete time samples at a specific rate (Hz). <strong>Quantization:</strong> Mapping continuous amplitude values to discrete levels based on bit depth.</p>
+        </div>
+
+        <div class="controls-grid">
+          <div class="control-group">
+            <label class="control-label">
+              Signal Type
+            </label>
+            <select id="signalType">
+              <option value="sine">Sine Wave</option>
+              <option value="square">Square Wave</option>
+              <option value="triangle">Triangle Wave</option>
+              <option value="sawtooth">Sawtooth Wave</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">
+              Signal Frequency
+              <span class="control-value" id="freqValue">5 Hz</span>
+            </label>
+            <input type="range" id="frequency" min="1" max="20" value="5" step="0.5">
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">
+              Sampling Rate
+              <span class="control-value" id="sampleRateValue">50 Hz</span>
+            </label>
+            <input type="range" id="sampleRate" min="5" max="200" value="50" step="5">
+          </div>
+
+          <div class="control-group">
+            <label class="control-label">
+              Quantization Bits
+              <span class="control-value" id="bitDepthValue">8 bits</span>
+            </label>
+            <input type="range" id="bitDepth" min="1" max="16" value="8" step="1">
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-label">Nyquist Rate</div>
+            <div class="stat-value" id="nyquistRate">10 Hz</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Quantization Levels</div>
+            <div class="stat-value" id="quantLevels">256</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Bit Rate</div>
+            <div class="stat-value" id="bitRate">400 bps</div>
+          </div>
+        </div>
+
+        <div class="canvas-grid">
+          <div class="canvas-container">
+            <div class="canvas-label">Original Analog Signal</div>
+            <canvas id="analogCanvas" width="800" height="300"></canvas>
+          </div>
+          <div class="canvas-container">
+            <div class="canvas-label">Sampled Signal</div>
+            <canvas id="sampledCanvas" width="800" height="300"></canvas>
+          </div>
+          <div class="canvas-container">
+            <div class="canvas-label">Quantized Signal</div>
+            <canvas id="quantizedCanvas" width="800" height="300"></canvas>
+          </div>
+          <div class="canvas-container">
+            <div class="canvas-label">Reconstructed Signal</div>
+            <canvas id="reconstructedCanvas" width="800" height="300"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Audio Preprocessing Section -->
+    <section class="section">
+      <div class="glass-card">
+        <h2 class="section-title">Audio Preprocessing</h2>
+        
+        <div class="info-box">
+          <p><strong>Noise Reduction:</strong> Remove unwanted background noise using spectral gating. <strong>Silence Removal:</strong> Detect and remove silent portions of audio based on amplitude threshold.</p>
+        </div>
+
+        <div class="btn-group">
+          <div class="file-upload">
+            <input type="file" id="audioFile" accept="audio/*">
+            <label for="audioFile" class="file-upload-label">
+              <span>📁</span>
+              <span>Upload Audio File</span>
+            </label>
+          </div>
+          <button class="btn btn-primary" id="recordBtn">
+            <span>🎤</span>
+            <span id="recordBtnText">Start Recording</span>
+          </button>
+        </div>
+
+        <div id="audioControls" style="display: none;">
+          <div class="controls-grid">
+            <div class="control-group">
+              <label class="control-label">
+                Noise Threshold
+                <span class="control-value" id="noiseThresholdValue">-40 dB</span>
+              </label>
+              <input type="range" id="noiseThreshold" min="-60" max="-20" value="-40" step="1">
+            </div>
+
+            <div class="control-group">
+              <label class="control-label">
+                Silence Threshold
+                <span class="control-value" id="silenceThresholdValue">-50 dB</span>
+              </label>
+              <input type="range" id="silenceThreshold" min="-70" max="-30" value="-50" step="1">
+            </div>
+
+            <div class="control-group">
+              <label class="control-label">
+                Minimum Silence Duration
+                <span class="control-value" id="minSilenceDurationValue">0.5 s</span>
+              </label>
+              <input type="range" id="minSilenceDuration" min="0.1" max="2" value="0.5" step="0.1">
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-primary" id="applyNoiseReduction">
+              <span>🔇</span>
+              <span>Apply Noise Reduction</span>
+            </button>
+            <button class="btn btn-primary" id="applySilenceRemoval">
+              <span>✂️</span>
+              <span>Remove Silence</span>
+            </button>
+            <button class="btn btn-secondary" id="resetAudio">
+              <span>↺</span>
+              <span>Reset</span>
+            </button>
+            <button class="btn btn-secondary" id="downloadAudio">
+              <span>💾</span>
+              <span>Download Processed</span>
+            </button>
+          </div>
+
+          <div class="canvas-container">
+            <div class="canvas-label">Original Waveform</div>
+            <canvas id="originalWaveform" width="1200" height="200"></canvas>
+            <audio id="originalAudio" controls style="width: 100%; margin-top: 1rem;"></audio>
+          </div>
+
+          <div class="canvas-container">
+            <div class="canvas-label">Processed Waveform</div>
+            <canvas id="processedWaveform" width="1200" height="200"></canvas>
+            <audio id="processedAudio" controls style="width: 100%; margin-top: 1rem;"></audio>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-label">Original Duration</div>
+              <div class="stat-value" id="originalDuration">0.0s</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Processed Duration</div>
+              <div class="stat-value" id="processedDuration">0.0s</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Reduction</div>
+              <div class="stat-value" id="reductionPercent">0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
